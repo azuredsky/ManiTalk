@@ -112,7 +112,7 @@ class Faceformer(nn.Module):
                     vertice_input = self.PPE(vertice_emb)  
                 tgt_mask = self.biased_mask[:, :vertice_input.shape[1], :vertice_input.shape[1]].clone().detach().to(device=self.device)
                 memory_mask = enc_dec_mask(self.device, self.dataset, vertice_input.shape[1], hidden_states.shape[1])
-                print(vertice_input.size(),tgt_mask.size(), memory_mask.size())
+                #print(vertice_input.size(),tgt_mask.size(), memory_mask.size())
                 vertice_out = self.transformer_decoder(vertice_input, hidden_states, tgt_mask=tgt_mask, memory_mask=memory_mask) 
                 vertice_out = self.vertice_map_r(vertice_out)  
                 new_output = self.vertice_map(vertice_out[:,-1,:]).unsqueeze(1)
@@ -131,6 +131,8 @@ class Faceformer(nn.Module):
         frame_num = hidden_states.shape[1]
         hidden_states = self.audio_feature_map(hidden_states)
 
+        frame_num=1200 if frame_num>1200 else frame_num
+
         for i in range(frame_num):
             if i==0:
                 vertice_emb = obj_embedding.unsqueeze(1)
@@ -139,8 +141,12 @@ class Faceformer(nn.Module):
             else:
                 vertice_input = self.PPE(vertice_emb)
 
+            # print(vertice_input.shape[1])
             tgt_mask = self.biased_mask[:, :vertice_input.shape[1], :vertice_input.shape[1]].clone().detach().to(device=self.device)
             memory_mask = enc_dec_mask(self.device, self.dataset, vertice_input.shape[1], hidden_states.shape[1])
+
+            #print(vertice_input.shape, hidden_states.shape, tgt_mask.shape, memory_mask.shape)
+
             vertice_out = self.transformer_decoder(vertice_input, hidden_states, tgt_mask=tgt_mask, memory_mask=memory_mask)
             vertice_out = self.vertice_map_r(vertice_out)
             new_output = self.vertice_map(vertice_out[:,-1,:]).unsqueeze(1)

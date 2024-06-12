@@ -61,7 +61,8 @@ class exp_generator():
         audio_feature = np.squeeze(processor(speech_array,sampling_rate=16000).input_values)
         audio_feature = np.reshape(audio_feature,(-1,audio_feature.shape[0]))
         audio_feature = torch.FloatTensor(audio_feature).to(self.config['device'])
-        prediction = model.predict(audio_feature, template, one_hot)
+        with torch.no_grad():
+            prediction = model.predict(audio_feature, template, one_hot)
         prediction = prediction.squeeze() # (seq_len, V*3)
         return np.reshape(prediction.detach().cpu().numpy(),(-1,68,3))
 

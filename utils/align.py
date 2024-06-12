@@ -77,7 +77,7 @@ class Align():
         neutral_driving[:,self.brow_idx] = neutral_driving[0,self.brow_idx] + brow_change
 
         # add head pose
-        if head_pose is not None:
+        if head_pose != None:
             while np.shape(head_pose)[0]<np.shape(neutral_driving)[0]:
                 head_pose2 = head_pose[::-1]
                 head_pose = np.concatenate((head_pose,head_pose2),axis=0)        
@@ -129,7 +129,7 @@ class Align():
         U,s,Vt = np.linalg.svd(A,full_matrices=False)
         V = Vt.T
         T = np.dot(V, U.T)
-        if reflection is not 'best':
+        if reflection != 'best':
             # does the current solution use a reflection?
             have_reflection = np.linalg.det(T) < 0
             # if that's not what was specified, force another reflection

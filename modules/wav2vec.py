@@ -133,7 +133,7 @@ class Wav2Vec2Model(Wav2Vec2Model):
                 hidden_states[mask_feature_indices[:, None].expand(-1, sequence_length, -1)] = 0
 
         encoder_outputs = self.encoder(
-            hidden_states,
+            hidden_states[0],
             attention_mask=attention_mask,
             output_attentions=output_attentions,
             output_hidden_states=output_hidden_states,

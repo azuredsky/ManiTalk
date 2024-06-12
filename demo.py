@@ -116,7 +116,7 @@ def demo_animation(inpainting_network, dense_motion_network, checkpoint, source,
         
         for i in range(np.shape(driving_kp_list)[0]):
             frame_name = str(i)
-            print(frame_name)                     
+            #print(frame_name)                     
             kp_driving = {} 
             kp_driving['fg_kp'] = torch.tensor(driving_kp_list[i][np.newaxis,:]).to(device) # 1,70,2            
             kp_norm = relative_kp(torch.tensor(source_kp).to(device), kp_driving, kp_driving_initial, kp_driving_initial2,theta,rho)
@@ -170,7 +170,7 @@ def main(opt):
     # load network
     log_dir = os.path.join(*os.path.split(opt.checkpoint)[:-1])
     with open(log_dir+'/vox-256.yaml') as f:
-        config = yaml.load(f)
+        config = yaml.safe_load(f)
     inpainting = InpaintingNetwork(**config['model_params']['generator_params'],
                                    **config['model_params']['common_params'])
     dense_motion_network = DenseMotionNetwork(**config['model_params']['common_params'],
@@ -197,7 +197,7 @@ if __name__ == "__main__":
     parser.add_argument("--a_brow", type=float, default=0, help='value from -1 to 1')
     # Currently only 4 gaze directions are supported. 
     # To generate other directions, refer to the paper to calculate the pupil position based on the coordinates of the eyelid points.
-    parser.add_argument("--theta", type=int, default=0, choices=[0,90,180,270]) 
+    parser.add_argument("--theta", type=int, default=90, choices=[0,90,180,270]) 
     parser.add_argument("--rho", type=int, default=0, help='value from 0 to 1') 
 
     ## exp generator params
